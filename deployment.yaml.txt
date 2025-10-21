@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: html-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: html-app
+  template:
+    metadata:
+      labels:
+        app: html-app
+    spec:
+      containers:
+      - name: html-app
+        image: <your_dockerhub_username>/html-app:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: html-service
+spec:
+  selector:
+    app: html-app
+  ports:
+    - port: 80
+      targetPort: 80
+  type: NodePort
