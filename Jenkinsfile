@@ -39,6 +39,7 @@ pipeline {
     }
 
     triggers {
+        pollSCM('H/2 * * * *') // Kiểm tra GitHub mỗi 2 phút
         githubPush()
     }
 }
