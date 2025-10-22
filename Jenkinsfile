@@ -1,24 +1,11 @@
 pipeline {
-    agent none
-
+    agent any
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         DOCKER_IMAGE = 'huytm1996/html-app'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
     }
-
     stages {
-        stage('Checkout') {
-            agent any
-            steps {
-                git branch: 'main', url: 'https://github.com/huytm1996/simple-html-app.git'
-            }
-        }
-
-        stage('Build & Push Docker Image') {
-            agent { docker { image 'docker:24.0.5' 
-                            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                           }
-                  }
+        stage('Build') {
             steps {
                 sh '''
                 echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
@@ -27,10 +14,7 @@ pipeline {
                 '''
             }
         }
-
-        stage('Deploy to Kubernetes') {
-            agent { docker { image 'bitnami/kubectl:latest'
-                            args '-u root' } }
+        stage('Deploy') {
             steps {
                 sh '''
                 kubectl set image deployment/html-app html-app=$DOCKER_IMAGE:latest --record
@@ -38,9 +22,5 @@ pipeline {
                 '''
             }
         }
-    }
-
-    triggers {
-        githubPush()
     }
 }
