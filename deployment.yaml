@@ -12,7 +12,7 @@ spec:
       labels:
         app: html-app
     spec:
-    imagePullSecrets:
+      imagePullSecrets:
       - name: dockerhub-creds
       containers:
       - name: html-app
