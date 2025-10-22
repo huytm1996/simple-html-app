@@ -15,7 +15,10 @@ pipeline {
         }
 
         stage('Build & Push Docker Image') {
-            agent { docker { image 'docker:24.0.5' args '-u root -v /var/run/docker.sock:/var/run/docker.sock' } }
+            agent { docker { image 'docker:24.0.5' 
+                            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                           }
+                  }
             steps {
                 sh '''
                 echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
@@ -26,7 +29,8 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-            agent { docker { image 'bitnami/kubectl:latest' args '-u root' } }
+            agent { docker { image 'bitnami/kubectl:latest'
+                            args '-u root' } }
             steps {
                 sh '''
                 kubectl set image deployment/html-app html-app=$DOCKER_IMAGE:latest --record
