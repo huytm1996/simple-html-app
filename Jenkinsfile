@@ -10,7 +10,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone code từ GitHub
-                git branch: 'main', url: 'https://github.com/huytm1996/simple-html-app.git'
+              git branch: 'main',
+            credentialsId: 'github-creds',
+            url: 'https://github.com/huytm1996/simple-html-app.git'
             }
         }
 
