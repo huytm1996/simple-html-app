@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+          docker { image 'bitnami/kubectl:latest' }
+    }
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
@@ -39,7 +41,7 @@ pipeline {
     }
 
     triggers {
-        pollSCM('H/2 * * * *') // Kiểm tra GitHub mỗi 2 phút
+       
         githubPush()
     }
 }
