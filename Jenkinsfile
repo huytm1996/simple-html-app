@@ -7,7 +7,12 @@ pipeline {
     }
 
     stages {
-        // ✅ Để plugin Git tự checkout (trên Jenkins host)
+        stage('Clean Workspace') {
+            steps {
+                deleteDir() // luôn xoá sạch workspace trước mỗi build
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -16,7 +21,6 @@ pipeline {
             }
         }
 
-        // ✅ Các stage sau mount workspace để thấy code
         stage('Build Docker Image') {
             agent {
                 docker {
@@ -25,6 +29,7 @@ pipeline {
                 }
             }
             steps {
+                sh 'ls -la' // Kiểm tra code có thật
                 sh 'docker build -t $DOCKER_IMAGE:latest .'
             }
         }
@@ -43,24 +48,5 @@ pipeline {
                 '''
             }
         }
-
-        stage('Deploy to Kubernetes') {
-            agent {
-                docker {
-                    image 'bitnami/kubectl:latest'
-                    args "-u root -v ${env.HOME}/.kube:/root/.kube -v ${env.WORKSPACE}:${env.WORKSPACE} -w ${env.WORKSPACE}"
-                }
-            }
-            steps {
-                sh '''
-                kubectl set image deployment/html-app html-app=$DOCKER_IMAGE:latest --record
-                kubectl rollout status deployment/html-app
-                '''
-            }
-        }
-    }
-
-    triggers {
-        githubPush()
     }
 }
