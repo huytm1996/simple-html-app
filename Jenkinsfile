@@ -1,6 +1,7 @@
 pipeline {
     agent {
-          docker { image 'bitnami/kubectl:latest' }
+          docker { image 'bitnami/kubectl:latest'
+                   args '-u root'}
     }
 
     environment {
