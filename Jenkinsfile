@@ -7,42 +7,55 @@ pipeline {
     }
 
     stages {
+        // ✅ Để plugin Git tự checkout (trên Jenkins host)
         stage('Checkout') {
             steps {
-                // Clone code từ GitHub
-              git branch: 'main',
-            credentialsId: 'github-creds',
-            url: 'https://github.com/huytm1996/simple-html-app.git'
+                git branch: 'main',
+                    credentialsId: 'github-creds',
+                    url: 'https://github.com/huytm1996/simple-html-app.git'
             }
         }
 
+        // ✅ Các stage sau mount workspace để thấy code
         stage('Build Docker Image') {
-            steps {
-                dir("${env.WORKSPACE}") {
-                    sh 'docker build -t $DOCKER_IMAGE:latest .'
+            agent {
+                docker {
+                    image 'docker:25.0.3-dind'
+                    args "-v /var/run/docker.sock:/var/run/docker.sock -v ${env.WORKSPACE}:${env.WORKSPACE} -w ${env.WORKSPACE}"
                 }
+            }
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE:latest .'
             }
         }
 
         stage('Push to Docker Hub') {
-            steps {
-                dir("${env.WORKSPACE}") {
-                    sh '''
-                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                    docker push $DOCKER_IMAGE:latest
-                    '''
+            agent {
+                docker {
+                    image 'docker:25.0.3-dind'
+                    args "-v /var/run/docker.sock:/var/run/docker.sock -v ${env.WORKSPACE}:${env.WORKSPACE} -w ${env.WORKSPACE}"
                 }
+            }
+            steps {
+                sh '''
+                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                docker push $DOCKER_IMAGE:latest
+                '''
             }
         }
 
         stage('Deploy to Kubernetes') {
-            steps {
-                dir("${env.WORKSPACE}") {
-                    sh '''
-                    kubectl set image deployment/html-app html-app=$DOCKER_IMAGE:latest --record
-                    kubectl rollout status deployment/html-app
-                    '''
+            agent {
+                docker {
+                    image 'bitnami/kubectl:latest'
+                    args "-u root -v ${env.HOME}/.kube:/root/.kube -v ${env.WORKSPACE}:${env.WORKSPACE} -w ${env.WORKSPACE}"
                 }
+            }
+            steps {
+                sh '''
+                kubectl set image deployment/html-app html-app=$DOCKER_IMAGE:latest --record
+                kubectl rollout status deployment/html-app
+                '''
             }
         }
     }
