@@ -30,7 +30,7 @@ pipeline {
             }
             steps {
                 sh 'ls -la' // Kiểm tra code có thật
-                sh 'docker build -t $DOCKER_IMAGE:latest .'
+                sh 'docker build --no-cache -t $DOCKER_IMAGE:latest .'
             }
         }
 
