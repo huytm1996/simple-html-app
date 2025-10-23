@@ -16,6 +16,7 @@ spec:
       - name: dockerhub-creds
       containers:
       - name: html-app
+        imagePullPolicy: Always
         image: huytm1996/html-app:latest
         ports:
         - containerPort: 80
