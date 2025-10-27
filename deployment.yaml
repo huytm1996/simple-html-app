@@ -15,15 +15,14 @@ spec:
       imagePullSecrets:
       - name: dockerhub-creds
       containers:
-      - name: html-app
-        imagePullPolicy: Always
+      - name: html-app-main
         image: huytm1996/html-app:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
-
-      - name: html-app2
-        imagePullPolicy: Always
+      - name: html-app-secondary
         image: huytm1996/html-app:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8081
 ---
@@ -35,11 +34,10 @@ spec:
   selector:
     app: html-app
   ports:
-    - port: 80
-      targetPort: 80
-      nodePort: 31334
+  - port: 80
+    targetPort: 80
+    nodePort: 31334
   type: NodePort
-
 ---
 apiVersion: v1
 kind: Service
@@ -49,7 +47,7 @@ spec:
   selector:
     app: html-app
   ports:
-    - port: 8081
-      targetPort: 8081
-      nodePort: 31335
+  - port: 8081
+    targetPort: 8081
+    nodePort: 31335
   type: NodePort
