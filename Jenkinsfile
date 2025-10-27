@@ -9,6 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                credentialsId: 'github-cer',
                 git branch: 'main', url: 'https://github.com/huytm1996/simple-html-app.git'
             }
         }
