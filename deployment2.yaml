@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: html2-app
+        app: html-app2
     spec:
       imagePullSecrets:
       - name: dockerhub-creds
