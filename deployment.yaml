@@ -15,7 +15,7 @@ spec:
       imagePullSecrets:
       - name: dockerhub-creds
       containers:
-      - name: html-app-main
+      - name: html-app
         image: huytm1996/html-app:latest
         imagePullPolicy: Always
         ports:
