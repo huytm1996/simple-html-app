@@ -9,10 +9,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                credentialsId: 'github-cer',
-                git branch: 'main', url: 'https://github.com/huytm1996/simple-html-app.git'
+              cleanWs() // dọn workspace cũ
+              git branch: 'main', url: 'https://github.com/huytm1996/simple-html-app.git'
+               
             }
         }
+    
 
         stage('Build Docker Image') {
             steps {
