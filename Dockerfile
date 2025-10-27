@@ -1,4 +1,4 @@
 FROM nginx:alpine
-
-ARG INDEX_FILE=index.html
-COPY ${INDEX_FILE} /usr/share/nginx/html/index.html
+COPY index1.html /usr/share/nginx/html/index1.html
+COPY index2.html /usr/share/nginx/html/index2.html
+COPY default.conf /etc/nginx/conf.d/default.conf
