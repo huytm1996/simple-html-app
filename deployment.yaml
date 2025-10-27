@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
-      - name: html-app-secondary
+      - name: html-app2
         image: huytm1996/html-app:latest
         imagePullPolicy: Always
         ports:
