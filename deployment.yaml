@@ -29,8 +29,8 @@ spec:
   selector:
     app: html-app
   ports:
-  - name: http
-    port: 80
-    targetPort: 80
-    nodePort: 31334
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 31334
   type: NodePort
