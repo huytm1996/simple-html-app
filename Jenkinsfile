@@ -51,12 +51,12 @@ pipeline {
             steps {
                script {
                  env.BUILD_TAG =  "huytm1996/html-app.v${env.BUILD_NUMBER}"
-                 sh """
+                 sh '''
                  echo "Build Number: ${env.BUILD_NUMBER}" > build-info.txt
                  echo "Git Commit: ${env.GIT_COMMIT}" >> build-info.txt
                  echo "Tag: ${env.BUILD_TAG}" >> build-info.txt
                  echo "Date: $(date)" >> build-info.txt
-                 """
+                 '''
             archiveArtifacts artifacts: 'build-info.txt', onlyIfSuccessful: true
                        }
                   }
