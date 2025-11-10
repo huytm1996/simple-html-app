@@ -9,11 +9,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+              cleanWs() // dọn workspace cũ
               checkout scm
               script {
                     env.GIT_COMMIT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                 }
-              cleanWs() // dọn workspace cũ
+             
               
                
             }
