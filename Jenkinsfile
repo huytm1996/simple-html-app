@@ -50,6 +50,7 @@ pipeline {
         stage('Save Artifact') {
             steps {
                script {
+                 env.BUILD_TAG =  "huytm1996/html-app.v${env.BUILD_NUMBER}"
                  sh """
                  echo "Build Number: ${env.DOCKER_IMAGE}" > build-info.txt
                  echo "Git Commit: ${GIT_COMMIT}" >> build-info.txt
@@ -57,9 +58,9 @@ pipeline {
                  echo "Date: $(date)" >> build-info.txt
                  """
             archiveArtifacts artifacts: 'build-info.txt', onlyIfSuccessful: true
-        }
-    }
-}
+                       }
+                  }
+                              }
 
     }
 
