@@ -9,8 +9,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+              checkout scm
+              script {
+                    env.GIT_COMMIT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                }
               cleanWs() // dọn workspace cũ
-              git branch: 'main', url: 'https://github.com/huytm1996/simple-html-app.git'
+              
                
             }
         }
@@ -43,6 +47,20 @@ pipeline {
                 '''
             }
         }
+        stage('Save Artifact') {
+            steps {
+               script {
+                 sh """
+                 echo "Build Number: ${env.DOCKER_IMAGE}" > build-info.txt
+                 echo "Git Commit: ${GIT_COMMIT}" >> build-info.txt
+                 echo "Tag: ${BUILD_TAG}" >> build-info.txt
+                 echo "Date: $(date)" >> build-info.txt
+                 """
+            archiveArtifacts artifacts: 'build-info.txt', onlyIfSuccessful: true
+        }
+    }
+}
+
     }
 
     triggers {
